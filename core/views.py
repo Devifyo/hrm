@@ -1,5 +1,6 @@
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 
 @login_required
 def global_login_redirect(request):

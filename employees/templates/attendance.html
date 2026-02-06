@@ -1,0 +1,242 @@
+{% extends 'layouts/base_employee.html' %}
+
+{% block title %}Attendance Management | HRM Pro{% endblock %}
+{% block page_title %}Attendance History{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    body { font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
+
+    .screen-fit { max-width: 100%; overflow-x: hidden; }
+
+    .attendance-container {
+        max-height: 60vh;
+        overflow-y: auto;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 80px;
+        scroll-behavior: smooth;
+    }
+
+    .attendance-container::-webkit-scrollbar { height: 6px; width: 6px; }
+    .attendance-container::-webkit-scrollbar-track { background: #f8fafc; }
+    .attendance-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+    .sticky-header {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        background: white;
+        backdrop-filter: blur(6px);
+    }
+
+    th { white-space: nowrap; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="screen-fit">
+
+    <!-- SUMMARY CARDS -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+        <div class="bg-white p-5 rounded-2xl border shadow-sm">
+            <p class="text-xs text-slate-400">Total working days</p>
+            <h3 class="text-2xl font-semibold">{{ total_days }}</h3>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border shadow-sm">
+            <p class="text-xs text-slate-400">Days present</p>
+            <h3 class="text-2xl font-semibold text-emerald-600">{{ present_days }}</h3>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border shadow-sm">
+            <p class="text-xs text-slate-400">Days on leave</p>
+            <h3 class="text-2xl font-semibold text-amber-600">{{ leave_days }}</h3>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border shadow-sm">
+            <p class="text-xs text-slate-400">Days absent</p>
+            <h3 class="text-2xl font-semibold text-rose-600">{{ absent_days }}</h3>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border shadow-sm">
+            <p class="text-xs text-slate-400">Avg. working hours</p>
+            <h3 class="text-2xl font-semibold">{{ avg_hours }} hrs/day</h3>
+        </div>
+    </div>
+
+    <!-- TABLE CARD -->
+    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+
+        <!-- SEARCH + FILTER -->
+        <form method="get" class="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            
+
+            <div class="flex items-center gap-2">
+                <select name="status" class="px-3 py-2 rounded-xl border text-xs">
+                    <option value="">Status</option>
+                    <option value="present" {% if request.GET.status == "present" %}selected{% endif %}>Present</option>
+                    <option value="late" {% if request.GET.status == "late" %}selected{% endif %}>Late</option>
+                    <option value="leave" {% if request.GET.status == "leave" %}selected{% endif %}>Leave</option>
+                    <option value="absent" {% if request.GET.status == "absent" %}selected{% endif %}>Absent</option>
+                </select>
+
+                <select name="shift" class="px-3 py-2 rounded-xl border text-xs">
+                    <option value="">Shift</option>
+                    <option value="Day Shift">Day Shift</option>
+                    <option value="Night Shift">Night Shift</option>
+                </select>
+
+                <select name="limit" class="px-3 py-2 rounded-xl border text-xs">
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="50">50</option>
+                </select>
+
+                <button type="submit" class="px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-semibold">
+                    Apply
+                </button>
+            </div>
+        </form>
+
+        <!-- TABLE -->
+        <div class="attendance-container">
+            <table class="w-full min-w-[1400px] border-collapse">
+            <thead class="sticky-header bg-slate-50 border-b">
+    <tr>
+        <th class="px-5 py-4 text-[11px] font-semibold text-slate-400 uppercase">Date</th>
+        <th class="px-5 py-4 text-[11px] font-semibold text-slate-400 uppercase">Status</th>
+        <th class="px-5 py-4 text-[11px] font-semibold text-slate-400 uppercase">Shift</th>
+        <th class="px-5 py-4 text-[11px] font-semibold text-slate-400 uppercase">Clock In</th>
+        <th class="px-5 py-4 text-[11px] font-semibold text-slate-400 uppercase">Clock Out</th>
+        <th class="px-5 py-4 text-[11px] font-semibold text-slate-400 uppercase">Production</th>
+        <th class="px-5 py-4 text-[11px] font-semibold text-slate-400 uppercase">Break</th>
+        <th class="px-5 py-4 text-[11px] font-semibold text-slate-400 uppercase">Overtime</th>
+        <th class="px-5 py-4 text-[11px] font-semibold text-slate-400 uppercase">Progress</th>
+        <th class="px-5 py-4 text-[11px] font-semibold text-slate-400 uppercase">Total</th>
+        <th class="px-5 py-4 text-[11px] font-semibold text-slate-400 uppercase">Leave Type</th>
+        <th class="px-5 py-4 text-[11px] font-semibold text-slate-400 uppercase">Approval</th>
+    </tr>
+</thead>
+
+                <tbody class="divide-y divide-slate-100">
+                    {% for record in page_obj %}
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-5 py-4 font-medium text-slate-800 leading-tight">
+                            <div>{{ record.date|date:"d M" }}</div>
+                            <div class="text-xs text-slate-400">{{ record.date|date:"Y" }}</div>
+                        </td>
+
+                        <td class="px-5 py-4">
+                            <span class="inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-semibold
+                                {% if record.status == 'present' %} bg-emerald-100 text-emerald-600
+                                {% elif record.status == 'late' %} bg-amber-100 text-amber-600
+                                {% elif record.status == 'half' %} bg-orange-100 text-orange-600
+                                {% elif record.status == 'leave' %} bg-sky-100 text-sky-600
+                                {% else %} bg-rose-100 text-rose-600 {% endif %}">
+                                {{ record.status|title }}
+                            </span>
+                        </td>
+
+                        <td class="px-5 py-4 text-slate-700 font-medium">{{ record.shift_type }}</td>
+                        <td class="px-5 py-4 text-slate-700 font-medium">{{ record.clock_in }}</td>
+                        <td class="px-5 py-4 text-slate-700 font-medium">{{ record.clock_out }}</td>
+                        <td class="px-5 py-4 text-slate-700 font-medium">{{ record.production_hours }}</td>
+                        <td class="px-5 py-4 text-slate-700 font-medium">{{ record.break_hours }}</td>
+                        <td class="px-5 py-4 text-indigo-500 font-semibold">{{ record.overtime }}</td>
+
+                        <td class="px-5 py-4">
+                            <div class="w-28 h-2 bg-slate-200 rounded-full overflow-hidden">
+                                <div class="h-full rounded-full
+                                    {% if record.progress >= 70 %} bg-emerald-500
+                                    {% elif record.progress >= 40 %} bg-amber-400
+                                    {% else %} bg-slate-300 {% endif %}"
+                                    style="width: {{ record.progress }}%">
+                                </div>
+                            </div>
+                        </td>
+
+                        <td class="px-5 py-4 font-semibold text-slate-900">{{ record.total_hours }}</td>
+
+                      
+
+                      <td class="px-5 py-4">
+    {% if record.leave_type %}
+        <span class="inline-flex items-center px-3 py-1 rounded-lg bg-indigo-600 text-white text-[12px] font-medium">
+            {{ record.leave_type }}
+        </span>
+    {% else %}
+        <span class="text-slate-400">--</span>
+    {% endif %}
+</td>
+
+
+<td class="px-5 py-4">
+    {% if record.approval_status %}
+        <span class="inline-flex items-center px-3 py-1 rounded-lg text-[12px] font-medium
+            {% if record.approval_status == 'Approved' %}
+                bg-emerald-100 text-emerald-600
+            {% elif record.approval_status == 'Pending' %}
+                bg-amber-100 text-amber-600
+            {% elif record.approval_status == 'Rejected' %}
+                bg-rose-100 text-rose-600
+            {% else %}
+                bg-slate-100 text-slate-500
+            {% endif %}
+        ">
+            {{ record.approval_status }}
+        </span>
+    {% else %}
+        <span class="text-slate-400">--</span>
+    {% endif %}
+</td>
+
+
+<td class="px-5 py-4">
+    <span class="inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-semibold
+        {% if record.approval_status == 'Approved' %} bg-emerald-100 text-emerald-600
+        {% elif record.approval_status == 'Pending' %} bg-amber-100 text-amber-600
+        {% else %} bg-rose-100 text-rose-600 {% endif %}">
+        {{ record.approval_status }}
+    </span>
+</td>
+
+
+                        <td class="px-5 py-4">
+                            <span class="inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-semibold
+                                {% if record.approval_status == 'Approved' %} bg-emerald-100 text-emerald-600
+                                {% elif record.approval_status == 'Pending' %} bg-amber-100 text-amber-600
+                                {% else %} bg-rose-100 text-rose-600 {% endif %}">
+                                {{ record.approval_status }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="12" class="py-10 text-center text-slate-400 text-sm">
+                            No attendance records found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PAGINATION -->
+        <div class="p-5 bg-slate-50 border-t flex items-center justify-between">
+            <p class="text-[11px] font-semibold text-slate-400 uppercase">
+                Showing {{ page_obj.start_index }}–{{ page_obj.end_index }} of {{ total_records }}
+            </p>
+            <div class="flex items-center gap-2">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-1.5 rounded-lg border text-xs">Prev</a>
+                {% endif %}
+                <span class="px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-xs font-semibold">
+                    {{ page_obj.number }}
+                </span>
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-1.5 rounded-lg border text-xs">Next</a>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

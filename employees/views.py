@@ -143,3 +143,7 @@ def leaves(request):
     }
 
     return render(request, 'leaves.html', context)
+
+
+def payroll(request):
+    return render(request,'payroll.html')

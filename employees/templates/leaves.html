@@ -1,0 +1,111 @@
+{% extends 'layouts/base_employee.html' %}
+{% load static %}
+
+{% block title %}Leave Management | HRM Pro{% endblock %}
+{% block page_title %}Leave Management{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css" rel="stylesheet">
+
+<!--css-->
+<link rel = "stylesheet" href = "{% static 'employees/css/main.css' %}">
+
+
+
+
+{% endblock %}
+
+{% block content %}
+<div class="max-w-[1600px] mx-auto" x-data="{ view: 'table' }">
+
+    
+
+    <!-- Stats -->
+    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full lg:w-3/4">
+            <div class="bg-white p-5 rounded-2xl border shadow-sm">
+                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Annual Leave</p>
+                <h3 class="text-2xl font-bold text-slate-800 mt-1">{{ annual_remaining }} <span class="text-sm font-medium text-slate-400 ml-1">Days left</span></h3>
+            </div>
+            <div class="bg-white p-5 rounded-2xl border shadow-sm">
+                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Sick Leave</p>
+                <h3 class="text-2xl font-bold text-slate-800 mt-1">{{ sick_remaining }} <span class="text-sm font-medium text-slate-400 ml-1">Days left</span></h3>
+            </div>
+            <div class="bg-white p-5 rounded-2xl border shadow-sm">
+                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Pending Approvals</p>
+                <h3 class="text-2xl font-bold text-amber-500 mt-1">{{ pending_requests }}</h3>
+            </div>
+        </div>
+
+        <button class="bg-indigo-600 text-white px-8 py-3 rounded-2xl text-sm font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-100">
+            + Request Leave
+        </button>
+    </div>
+
+    <!-- Toggle -->
+    <div class="bg-white rounded-3xl shadow-sm border overflow-hidden min-h-[750px]">
+        <div class="p-4 border-b flex justify-between items-center">
+            <div class="flex bg-slate-100 p-1 rounded-xl">
+                <button 
+                    @click="view = 'calendar'; $nextTick(() => { if (window.calendar) { window.calendar.updateSize(); }})"
+                    :class="view === 'calendar' ? 'toggle-active' : 'text-slate-500'" 
+                    class="px-6 py-2 rounded-lg text-xs font-bold transition">
+                    Calendar View
+                </button>
+                <button 
+                    @click="view = 'table'" 
+                    :class="view === 'table' ? 'toggle-active' : 'text-slate-500'" 
+                    class="px-6 py-2 rounded-lg text-xs font-bold transition">
+                    History Table
+                </button>
+            </div>
+        </div>
+
+        <!-- Calendar -->
+        <div x-show="view === 'calendar'" x-transition class="p-6">
+            <div id="leaveCalendar"></div>
+        </div>
+
+        
+        <!-- History Table (UNCHANGED) -->
+        <div x-show="view === 'table'" x-transition class="leave-container">
+            <table class="w-full min-w-[1000px] border-collapse text-left">
+                <thead class="bg-slate-50 border-b">
+                    <tr>
+                        <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase">Leave Type</th>
+                        <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase">Duration</th>
+                        <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase">Total Days</th>
+                        <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase text-right">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y">
+                    {% for leave in all_leaves_static %}
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-6 py-4 font-semibold">{{ leave.leave_type }}</td>
+                        <td class="px-6 py-4 text-sm text-slate-600">{{ leave.start_date }} to {{ leave.end_date }}</td>
+                        <td class="px-6 py-4 font-bold">{{ leave.total_days }} Days</td>
+                        <td class="px-6 py-4 text-right">
+                            <span class="px-3 py-1 rounded-full text-xs font-bold
+                                {% if leave.status == 'Approved' %} bg-emerald-100 text-emerald-600
+                                {% else %} bg-amber-100 text-amber-600 {% endif %}">
+                                {{ leave.status|upper }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
+{{ all_leaves_static|json_script:"leaves-data" }}
+
+<script src="{% static 'employees/js/leaves.js' %}"></script>
+{% endblock %}

@@ -1,92 +1,106 @@
 {% extends 'base.html' %}
 
 {% block layout %}
-    <div id="mobileOverlay" class="fixed inset-0 bg-gray-900/60 z-30 hidden lg:hidden glass-panel transition-opacity"></div>
+<div id="mobileOverlay" class="fixed inset-0 bg-gray-900/60 z-30 hidden lg:hidden glass-panel transition-opacity"></div>
 
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 bg-white border-r border-gray-100 transform -translate-x-full lg:translate-x-0 sidebar-transition flex flex-col shadow-2xl lg:shadow-none">
-        <div class="h-24 flex items-center px-8">
-            <div class="flex items-center gap-3 text-indigo-600">
-                <div class="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center text-xl shadow-indigo-200 shadow-lg">
-                    <i class="fa-brands fa-hive"></i>
-                </div>
-                <span class="text-2xl font-extrabold text-gray-900">HRM<span class="text-indigo-600">Pro</span></span>
+<aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 bg-white border-r border-gray-100 transform -translate-x-full lg:translate-x-0 sidebar-transition flex flex-col shadow-2xl lg:shadow-none">
+    <div class="h-24 flex items-center px-8">
+        <div class="flex items-center gap-3 text-indigo-600">
+            <div class="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center text-xl shadow-indigo-200 shadow-lg">
+                <i class="fa-brands fa-hive"></i>
             </div>
-            <button id="closeSidebar" class="lg:hidden ml-auto text-gray-400 p-2"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <span class="text-2xl font-extrabold text-gray-900">HRM<span class="text-indigo-600">Pro</span></span>
         </div>
-        
-        <nav class="flex-1 px-6 py-4 space-y-2 overflow-y-auto">
-            <p class="px-2 text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Dashboard</p>
-            
-            <a href="{% url 'employees:dashboard' %}" class="flex items-center gap-4 px-4 py-4 bg-indigo-50 text-indigo-700 rounded-2xl font-bold transition-all shadow-sm ring-1 ring-indigo-100">
-                <i class="fa-solid fa-grid-2 w-5"></i> Overview
-            </a>
-            <a href="#" class="flex items-center gap-4 px-4 py-4 text-gray-500 hover:text-gray-900 hover:bg-white hover:shadow-md rounded-2xl font-semibold transition-all">
-                <i class="fa-solid fa-clock w-5 text-gray-400"></i> Attendance
-            </a>
-            <a href="#" class="flex items-center gap-4 px-4 py-4 text-gray-500 hover:text-gray-900 hover:bg-white hover:shadow-md rounded-2xl font-semibold transition-all">
-                <i class="fa-solid fa-calendar-days w-5 text-gray-400"></i> Leaves
-            </a>
-             <a href="#" class="flex items-center gap-4 px-4 py-4 text-gray-500 hover:text-gray-900 hover:bg-white hover:shadow-md rounded-2xl font-semibold transition-all">
-                <i class="fa-solid fa-money-bill-wave w-5 text-gray-400"></i> Payroll
-            </a>
-        </nav>
-
-        <div class="p-6 border-t border-gray-50">
-            <button class="flex items-center gap-3 w-full px-4 py-3 text-red-500 hover:bg-red-50 hover:text-red-700 rounded-xl transition-colors font-semibold">
-                <i class="fa-solid fa-right-from-bracket"></i> Logout
-            </button>
-        </div>
-    </aside>
-
-    <div class="flex-1 flex flex-col h-screen overflow-hidden lg:ml-72 transition-all bg-[#F8FAFC]">
-        
-        <header class="h-24 bg-white/80 backdrop-blur-md flex items-center justify-between px-8 sticky top-0 z-30">
-            <div class="flex items-center gap-4">
-                <button id="openSidebar" class="lg:hidden p-3 text-gray-600 hover:bg-gray-100 rounded-xl transition"><i class="fa-solid fa-bars text-xl"></i></button>
-                <div class="hidden sm:block">
-                    <h2 class="text-xl font-bold text-gray-800">{% block page_title %}Dashboard{% endblock %}</h2>
-                    <p class="text-sm text-gray-500 font-medium" id="currentDateHeader">Loading...</p>
-                </div>
-            </div>
-            
-            <div class="flex items-center gap-5">
-                 <div class="hidden md:flex items-center bg-white border border-gray-200 rounded-full px-5 py-2.5 w-72 shadow-sm">
-                    <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
-                    <input type="text" placeholder="Search..." class="bg-transparent border-none outline-none text-sm ml-3 w-full font-medium">
-                </div>
-
-                <div class="relative">
-                    <button class="relative p-3 text-gray-500 hover:text-indigo-600 hover:bg-white rounded-full transition-all">
-                        <i class="fa-regular fa-bell text-xl"></i>
-                        <span class="absolute top-3 right-3 h-2.5 w-2.5 bg-red-500 rounded-full border-2 border-white"></span>
-                    </button>
-                 </div>
-                 
-                 <div class="relative">
-                    <button class="flex items-center gap-3 hover:bg-white p-1.5 pr-4 rounded-full transition-all border border-transparent hover:border-gray-100">
-                        <img src="https://ui-avatars.com/api/?name=Alex+Doe&background=6366f1&color=fff" class="h-10 w-10 rounded-full ring-2 ring-white shadow-sm" alt="Profile">
-                    </button>
-                 </div>
-            </div>
-        </header>
-
-        <main class="flex-1 overflow-y-auto p-4 md:p-8">
-            <div class="max-w-7xl mx-auto space-y-6 pb-10">
-                {% block content %}{% endblock %}
-            </div>
-        </main>
+        <button id="closeSidebar" class="lg:hidden ml-auto text-gray-400 p-2">
+            <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
     </div>
 
-    <script>
-        $(document).ready(function() {
-            // Mobile Sidebar
-            const sidebar = $('#sidebar'), overlay = $('#mobileOverlay');
-            $('#openSidebar').click(e => { e.stopPropagation(); sidebar.removeClass('-translate-x-full'); overlay.removeClass('hidden').addClass('block'); });
-            $('#closeSidebar, #mobileOverlay').click(() => { sidebar.addClass('-translate-x-full'); overlay.removeClass('block').addClass('hidden'); });
+    <nav class="flex-1 px-6 py-4 space-y-2 overflow-y-auto">
+        <p class="px-2 text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Dashboard</p>
 
-            // Date
-            const now = new Date();
-            $('#currentDateHeader').text(now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }));
-        });
-    </script>
+        <a href="{% url 'employees:dashboard' %}" class="flex items-center gap-4 px-4 py-4 bg-indigo-50 text-indigo-700 rounded-2xl font-bold transition-all shadow-sm ring-1 ring-indigo-100">
+            <i class="fa-solid fa-grid-2 w-5"></i> Overview
+        </a>
+        <a href="#" class="flex items-center gap-4 px-4 py-4 text-gray-500 hover:text-gray-900 hover:bg-white hover:shadow-md rounded-2xl font-semibold transition-all">
+            <i class="fa-solid fa-clock w-5 text-gray-400"></i> Attendance
+        </a>
+        <a href="#" class="flex items-center gap-4 px-4 py-4 text-gray-500 hover:text-gray-900 hover:bg-white hover:shadow-md rounded-2xl font-semibold transition-all">
+            <i class="fa-solid fa-calendar-days w-5 text-gray-400"></i> Leaves
+        </a>
+        <a href="#" class="flex items-center gap-4 px-4 py-4 text-gray-500 hover:text-gray-900 hover:bg-white hover:shadow-md rounded-2xl font-semibold transition-all">
+            <i class="fa-solid fa-money-bill-wave w-5 text-gray-400"></i> Payroll
+        </a>
+    </nav>
+
+    <div class="p-6 border-t border-gray-50">
+        <button class="flex items-center gap-3 w-full px-4 py-3 text-red-500 hover:bg-red-50 hover:text-red-700 rounded-xl transition-colors font-semibold">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+    </div>
+</aside>
+
+<div class="flex-1 flex flex-col h-screen overflow-hidden lg:ml-72 transition-all bg-[#F8FAFC]">
+    <header class="h-24 bg-white/80 backdrop-blur-md flex items-center justify-between px-8 sticky top-0 z-30">
+        <div class="flex items-center gap-4">
+            <button id="openSidebar" class="lg:hidden p-3 text-gray-600 hover:bg-gray-100 rounded-xl transition">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+            <div class="hidden sm:block">
+                <h2 class="text-xl font-bold text-gray-800">{% block page_title %}Dashboard{% endblock %}</h2>
+                <p class="text-sm text-gray-500 font-medium" id="currentDateHeader">Loading...</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-5">
+            <div class="hidden md:flex items-center bg-white border border-gray-200 rounded-full px-5 py-2.5 w-72 shadow-sm">
+                <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
+                <input type="text" placeholder="Search..." class="bg-transparent border-none outline-none text-sm ml-3 w-full font-medium">
+            </div>
+
+            <button class="relative p-3 text-gray-500 hover:text-indigo-600 hover:bg-white rounded-full transition-all">
+                <i class="fa-regular fa-bell text-xl"></i>
+                <span class="absolute top-3 right-3 h-2.5 w-2.5 bg-red-500 rounded-full border-2 border-white"></span>
+            </button>
+
+            <img src="https://ui-avatars.com/api/?name=Alex+Doe&background=6366f1&color=fff"
+                 class="h-10 w-10 rounded-full ring-2 ring-white shadow-sm" alt="Profile">
+        </div>
+    </header>
+
+    <main class="flex-1 overflow-y-auto p-4 md:p-8">
+        <div class="max-w-7xl mx-auto space-y-6 pb-10">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+</div>
+
+<!-- Global JS -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    const sidebar = $('#sidebar'), overlay = $('#mobileOverlay');
+
+    $('#openSidebar').on('click', e => {
+      e.stopPropagation();
+      sidebar.removeClass('-translate-x-full');
+      overlay.removeClass('hidden').addClass('block');
+    });
+
+    $('#closeSidebar, #mobileOverlay').on('click', () => {
+      sidebar.addClass('-translate-x-full');
+      overlay.removeClass('block').addClass('hidden');
+    });
+
+    const now = new Date();
+    $('#currentDateHeader').text(
+      now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+    );
+  });
+</script>
+
+<!-- 🔥 THIS IS THE IMPORTANT PART -->
+{% block extra_js %}{% endblock %}
+
 {% endblock %}

@@ -105,3 +105,41 @@ def attendance(request):
         "absent_days": 1,
         "avg_hours": 9.2,
     })
+
+
+def leaves(request):
+    static_leaves = [
+        {
+            'leave_type': 'Annual Leave',
+            'start_date': '2026-02-15',
+            'end_date': '2026-02-15',
+            'total_days': 3,
+            'status': 'Approved',
+            'reason': 'Family vacation'
+        },
+        {
+            'leave_type': 'Sick Leave',
+            'start_date': '2026-02-05',
+            'end_date': '2026-02-05',
+            'total_days': 1,
+            'status': 'Approved',
+            'reason': 'Medical checkup'
+        },
+        {
+            'leave_type': 'Casual Leave',
+            'start_date': '2026-02-25',
+            'end_date': '2026-02-25',
+            'total_days': 1,
+            'status': 'Pending',
+            'reason': 'Personal work'
+        },
+    ]
+
+    context = {
+        'all_leaves_static': static_leaves,
+        'annual_remaining': 12,
+        'sick_remaining': 5,
+        'pending_requests': 1,
+    }
+
+    return render(request, 'leaves.html', context)

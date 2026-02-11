@@ -6,4 +6,5 @@ app_name = 'employees'  # <--- This is the namespace
 urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'), 
     path('attendance/',views.attendance,name='attendance'),
+    path('leaves/',views.leaves,name='leaves'),
 ]

@@ -146,4 +146,78 @@ def leaves(request):
 
 
 def payroll(request):
-    return render(request,'payroll.html')
+    # Standard Employee Info for the header
+    employee_info = {
+        'id': 'EMP-2026-084',
+        'bank': 'Standard Chartered Bank',
+        'account': '**** 4492',
+        'pan_number': 'ABCDE1234F',
+    }
+
+    # Salary Breakdown
+    earnings = [
+        {'label': 'Basic Salary', 'amount': 4500.00},
+        {'label': 'HRA (House Rent Allowance)', 'amount': 1200.00},
+        {'label': 'Conveyance Allowance', 'amount': 300.00},
+        {'label': 'Special Allowance', 'amount': 500.00},
+    ]
+    
+    deductions = [
+        {'label': 'Provident Fund (EPF)', 'amount': 180.00},
+        {'label': 'Professional Tax', 'amount': 20.00},
+        {'label': 'Health Insurance Premium', 'amount': 150.00},
+        {'label': 'Income Tax (TDS)', 'amount': 450.00},
+    ]
+    
+    total_earnings = sum(item['amount'] for item in earnings)
+    total_deductions = sum(item['amount'] for item in deductions)
+    net_salary = total_earnings - total_deductions
+
+    # History Table
+    history = [
+        {'month': 'January 2026', 'total': 5850.00, 'status': 'Paid', 'date': 'Jan 31, 2026', 'id': 'PS-9920'},
+        {'month': 'December 2025', 'total': 5850.00, 'status': 'Paid', 'date': 'Dec 31, 2025', 'id': 'PS-8841'},
+        {'month': 'November 2025', 'total': 5700.00, 'status': 'Paid', 'date': 'Nov 30, 2025', 'id': 'PS-7712'},
+    ]
+
+    context = {
+        'employee': employee_info,
+        'earnings': earnings,
+        'deductions': deductions,
+        'total_earnings': total_earnings,
+        'total_deductions': total_deductions,
+        'net_salary': net_salary,
+        'history': history,
+        'current_month': 'February 2026'
+    }
+    return render(request, 'payroll.html', context)
+
+def profile(request):
+    # Data based on your current professional details
+    user_data = {
+        'full_name': 'Sahil Kumar', #
+        'role': 'Python Django Developer', #
+        'email': 'sahil.kumar@hrmpro.com',
+        'phone': '+91 98765 43210',
+        'location': 'Maharashtra, India', #
+        'join_date': 'January 15, 2025', #
+        'department': 'Engineering',
+        'manager': 'Alex Thompson',
+        'employment_type': 'Full-Time',
+    }
+
+    # Professional metrics
+    metrics = [
+        {'label': 'Projects', 'value': '4', 'icon': 'briefcase'}, # Refers to your Resume projects
+        {'label': 'Attendance', 'value': '98%', 'icon': 'calendar'},
+        {'label': 'Performance', 'value': '4.9', 'icon': 'star'},
+    ]
+
+    context = {
+        'user': user_data,
+        'metrics': metrics,
+    }
+    return render(request, 'profile.html', context)
+
+def mytasks(request):
+    return render(request,'mytasks.html')

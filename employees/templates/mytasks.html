@@ -1,0 +1,78 @@
+{% extends 'layouts/base_employee.html' %}
+
+{% block title %}My Tasks | HRM Pro{% endblock %}
+{% block page_title %}My Tasks{% endblock %}
+
+{% block content %}
+<div class="max-w-[1600px] mx-auto space-y-8 pb-12">
+
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-black text-slate-800 tracking-tight">My Tasks</h1>
+            <p class="text-sm text-slate-500 mt-1">Stay on top of what needs your attention.</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="flex items-center gap-3">
+            <a href="?filter=today"
+               class="px-5 py-2 rounded-2xl text-sm font-bold border border-slate-200 bg-white hover:bg-emerald-50 hover:border-emerald-200 text-emerald-600 transition">
+                Today
+            </a>
+            <a href="?filter=week"
+               class="px-5 py-2 rounded-2xl text-sm font-bold border border-slate-200 bg-white hover:bg-amber-50 hover:border-amber-200 text-amber-600 transition">
+                This Week
+            </a>
+            <a href="?filter=overdue"
+               class="px-5 py-2 rounded-2xl text-sm font-bold border border-slate-200 bg-white hover:bg-red-50 hover:border-red-200 text-red-600 transition">
+                Overdue
+            </a>
+        </div>
+    </div>
+
+    <!-- Task List -->
+    <div class="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden">
+        <div class="divide-y divide-slate-100">
+
+            <!-- Task Item -->
+            {% for task in tasks %}
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 hover:bg-slate-50 transition">
+                <div class="flex items-start gap-4">
+                    <div class="w-3 h-3 mt-2 rounded-full
+                        {% if task.status == 'overdue' %} bg-red-500
+                        {% elif task.status == 'today' %} bg-emerald-500
+                        {% else %} bg-amber-400 {% endif %}">
+                    </div>
+                    <div>
+                        <p class="font-bold text-slate-800">{{ task.title }}</p>
+                        <p class="text-sm text-slate-500 mt-1">{{ task.description }}</p>
+                        <p class="text-xs text-slate-400 mt-2">
+                            Due: {{ task.due_date }} · Assigned by {{ task.assigned_by }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <span class="text-xs font-bold uppercase tracking-widest
+                        {% if task.status == 'overdue' %} text-red-600
+                        {% elif task.status == 'today' %} text-emerald-600
+                        {% else %} text-amber-600 {% endif %}">
+                        {{ task.status }}
+                    </span>
+
+                    <button class="px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 transition">
+                        Mark Done
+                    </button>
+                </div>
+            </div>
+            {% empty %}
+            <div class="p-10 text-center text-slate-400">
+                🎉 No tasks found for this filter.
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

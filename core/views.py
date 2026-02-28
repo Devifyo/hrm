@@ -13,7 +13,8 @@ def global_login_redirect(request):
     # 2. CEO / Executives (Example of a future dedicated app)
     elif user.groups.filter(name='CEO').exists():
         # Assuming you create an 'executive' app later
-        return redirect('executive:dashboard') 
+        #return redirect('executive:dashboard') 
+        return redirect('/admin/')
         
     # 3. Managers / HR
     elif user.groups.filter(name='Manager').exists():

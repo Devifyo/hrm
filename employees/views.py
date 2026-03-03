@@ -1,16 +1,58 @@
 from multiprocessing import context
 from urllib import request
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.core.paginator import Paginator
 from datetime import date, timedelta
+from core.gemini_service import generate_daily_quote
 import random
-
+from .models import Attendance,EmployeeProfile
+from django.utils import timezone
 
 
 
 def dashboard(request):
     # Later you can pass context like 'total_leaves': 12
-    return render(request, 'dashboard.html') 
+    quote = generate_daily_quote()
+    profile = request.user.employeeprofile
+    today = timezone.localdate()
+
+    attendance = Attendance.objects.filter(
+        employee=profile,
+        date=today
+    ).first()
+
+    context = {
+        "attendance": attendance,
+        'quote':quote,
+    }
+    return render(request, 'dashboard.html', context) 
+
+def clock_action(request):
+    user = request.user
+    profile = user.employeeprofile
+    today = timezone.localdate()
+
+    attendance,created = Attendance.objects.get_or_create(
+        employee = profile,
+        date = today,
+    )
+
+    if not attendance.clock_in:
+        attendance.clock_in = timezone.now()
+        attendance.save()
+    
+    elif attendance.clock_in and not attendance.clock_out:
+        attendance.clock_out = timezone.now()
+        attendance.working_hours = attendance.clock_out - attendance.clock_in
+        attendance.save()
+    
+    else:
+        pass
+
+    return redirect("employees:dashboard")
+    
+    
+
 
 
 def attendance(request):

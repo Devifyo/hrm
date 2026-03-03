@@ -10,4 +10,5 @@ urlpatterns = [
     path('payroll/',views.payroll,name='payroll'),
     path('profile/',views.profile,name='profile'),
     path('mytasks/',views.mytasks,name='mytasks'),
+    path('clock_action/',views.clock_action, name = 'clock_action'),
 ]
